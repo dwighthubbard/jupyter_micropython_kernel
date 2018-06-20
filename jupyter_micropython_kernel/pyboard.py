@@ -132,7 +132,7 @@ class Pyboard:
             delayed = False
             for attempt in range(wait + 1):
                 try:
-                    self.serial = serial.Serial(device, baudrate=baudrate, interCharTimeout=1, rtscts=False, dsrdtr=False, xonxoff=False)
+                    self.serial = serial.Serial(device, baudrate=baudrate)
                     break
                 except (OSError, IOError): # Py2 and Py3 have different errors
                     if wait == 0:
@@ -201,7 +201,9 @@ class Pyboard:
         #   Add a small delay and send Ctrl-C twice after soft reboot to ensure
         #   any main program loop in main.py is interrupted.
         time.sleep(0.5)
-        self.serial.write(b'\x03\x03')
+        self.serial.write(b'\r\x03\x03')
+        time.sleep(0.5)
+        self.serial.write(b'\r\x01')
         # End modification above.
         data = self.read_until(1, b'raw REPL; CTRL-B to exit\r\n')
         if not data.endswith(b'raw REPL; CTRL-B to exit\r\n'):
