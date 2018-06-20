@@ -177,6 +177,8 @@ class Pyboard:
     def enter_raw_repl(self):
         self.serial.write(b'\r\x03\x03') # ctrl-C twice: interrupt any running program
 
+        time.sleep(.5)
+        self.serial.write(b'\r')
         # flush input (without relying on serial.flushInput())
         n = self.serial.inWaiting()
         while n > 0:
