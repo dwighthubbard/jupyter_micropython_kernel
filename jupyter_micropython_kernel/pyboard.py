@@ -38,9 +38,13 @@ Or:
     python pyboard.py test.py
 
 """
-import glob
+import logging
 import sys
 import time
+
+
+logger = logging.getLogger(__name__)
+
 
 try:
     stdout = sys.stdout.buffer
@@ -183,6 +187,7 @@ class Pyboard:
         data = self.read_until(1, b'raw REPL; CTRL-B to exit\r\n>')
         if not data.endswith(b'raw REPL; CTRL-B to exit\r\n>'):
             print(data)
+            logger.debug('Got invalid data: %r', data)
             raise PyboardError('could not enter raw repl')
 
         self.serial.write(b'\x04') # ctrl-D: soft reset
